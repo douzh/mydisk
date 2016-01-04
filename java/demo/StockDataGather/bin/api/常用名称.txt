@@ -1,0 +1,11 @@
+资产负债率为：debt ratio;
+资产负债表为balance sheet;
+净资产收益率为return on eruity
+
+总资产收益率ROA
+净资产收益率ROE
+主营业务利润率CPM
+总资产负债率TDR
+短期有息负债率CDR
+长期有息负债率LDR
+全部资本化率CLR
