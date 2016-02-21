@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="StockDataGather"
+  id="myeclipse.1455958241325"
+  context-root="/StockDataGather"
+  j2ee-spec="6.0"
+  archive="StockDataGather.war">
+  <attributes>
+    <attribute name="webrootdir" value="web" />
+  </attributes>
+</project-module>
+
