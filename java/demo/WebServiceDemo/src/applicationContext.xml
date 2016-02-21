@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<!-- 这是发布的webservice -->
+	<jaxws:endpoint id="helloWorld"
+		implementor="com.iteedu.demo.webservice.HelloWorldImpl" address="/helloWorld" />
+	<jaxws:server id="userService" serviceClass="com.iteedu.demo.webservice.IService"
+		address="/Users" />
+		
+	<!-- 这是为HelloWorldClient4Spring准备的bean -->
+	<bean id="client" class="com.iteedu.demo.webservice.HelloWorld"
+		factory-bean="clientFactory" factory-method="create" />
+
+	<bean id="clientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+		<property name="serviceClass" value="com.iteedu.demo.webservice.HelloWorld" />
+		<property name="address"
+			value="http://localhost:8080/webservicedemo/webservice/helloWorld" />
+	</bean>
+</beans>
