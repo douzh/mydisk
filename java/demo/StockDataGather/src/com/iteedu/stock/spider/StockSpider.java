@@ -18,7 +18,8 @@ import com.iteedu.stock.spider.xueqiu.utils.XueQiuApi;
 public class StockSpider {
     private static Log log=LogFactory.getLog(StockSpider.class);
     public static void main(String[] args) {
-        syncBalSheet();
+//        syncBalSheet();
+        syncZycwzb();
     }
     /**
      * 

@@ -9,7 +9,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/context 
 http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:property-placeholder location="classpath:config.properties"/>  
+	<context:property-placeholder location="classpath:config.properties" />
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
 		<property name="driverClass">
@@ -56,12 +56,13 @@ http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 		</property>
 		<property name="mappingLocations">
 			<list>
-<!-- 				<value>classpath*:hibernate/right/*.hbm.xml</value> -->
-<!-- 				<value>classpath*:hibernate/message/*.hbm.xml</value> -->
+				<!-- <value>classpath*:hibernate/right/*.hbm.xml</value> -->
+				<!-- <value>classpath*:hibernate/message/*.hbm.xml</value> -->
 			</list>
 		</property>
 		<property name="hibernateProperties">
 			<props>
+				<prop key="hbm2ddl.auto">create</prop>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 				<prop key="hibernate.connection.autocommit">${hibernate.connection.autocommit}</prop>
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
@@ -69,5 +70,5 @@ http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 		</property>
 	</bean>
 	<context:annotation-config></context:annotation-config>
-	<context:component-scan base-package="com"/>
+	<context:component-scan base-package="com" />
 </beans>

@@ -14,4 +14,10 @@ public class TestController {
         }
         return "loginSuccess";
     }
+    public String testLogin2(String username, String password) {
+        if (!"admin".equals(username) || !"admin".equals(password)) {
+            return "loginError";
+        }
+        return "loginSuccess";
+    }
 }

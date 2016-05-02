@@ -7,6 +7,9 @@
 	<packaging>war</packaging>
 	<name>StockDataGather</name>
 	<description>股票信息采集器</description>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding><!--字符集设置 -->
+	</properties>
 	<dependencyManagement>
 		<dependencies>
 
@@ -35,6 +38,17 @@
 			<version>2.5.6</version>
 		</dependency>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.18</version>
+		</dependency>
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>3.3.2.GA</version>
@@ -57,12 +71,27 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 				<configuration> -->
+<!-- 					<source>1.7</source> -->
+<!-- 					<target>1.7</target> -->
+<!-- 					<encoding>UTF-8</encoding> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+					<webResources>
+						<resource>	 this is relative to the pom.xml directory
+							<directory>web</directory>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 		</plugins>
