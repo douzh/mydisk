@@ -35,83 +35,85 @@ http://repo1.maven.org/
 
     mvn dependency:tree ：以树形结构展现依赖列表
 
-* help插件
 
-$ mvn help:describe -Dplugin=help
-$ mvn help:describe -Dplugin=archetype
-
-* archetype插件
-
-建一个 JAVA 项目 ：
-mvn archetype:generate -DgroupId=com.test -DartifactId=App
-
-建一个 web 项目 ：
- mvn archetype:generate  -DgroupId=com.test -DartifactId=web-app -DarchetypeArtifactId=maven-archetype-webapp -Dversion=1.0
-
-* eclipse插件
-
-Eclipse导入已存在的maven项目 ：
-
-在导入之前需要在项目根目录下面执行如下命令：
-
-普通 Eclipse 项目执行 ： 
-mvn eclipse:eclipse Eclipse
-
-web 项目执行 ： 
-mvn eclipse:eclipse –Dwtpversion=1.0
-
-然后通过Eclipse的maven插件中选择导入已存在的maven项目即可将其导入。
-
-在用eclipse导入web项目时 如果eclipse安装了wtp插件在会自动将其转化为eclipse认得到的web项目，在项目上面点击右键run as 的run on server可以用，但是当eclipse没有安装wtp插件时run on server则不用，此时的解决方式为用命令行切换到项目的根目录然后执行 mvn eclipse:eclipse –Dwtpversion=1.0即可解决。
-
-* pom.xml
+* Project Object Model(pom.xml)
 
 <project>
   <modelVersion>4.0.0</modelVersion>
+</project>
+
+** 项目坐标
+
+顶级元素，构成maven的唯一坐标
+
   <groupId>org.sonatype.mavenbook</groupId>
   <artifactId>my-project</artifactId>
   <version>1.0</version>
-</project>
+  <packaging>war</packaging>
 
-** 属性引用
 
-${属性名称}
+** 属性 properties
+
+顶级元素，在properties中定义，用${属性名称}引用
 
 <properties>
-	<artery.version>4.4.4</artery.version>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	<summer.core.version>2.1.5.6</summer.core.version>
 	<java.home>${env.JAVA_HOME}/jre</java.home>
 </properties>
-
+*** 隐式变量
 Maven提供了三个隐式的变量，可以用来访问环境变量，POM信息，和Maven Settings：
-env:env变量 暴露了你操作系统或者shell的环境变量。
-project:
+**** env
+env变量 暴露了你操作系统或者shell的环境变量。
+**** project
 project变量暴露了POM。你可以使用点标记（.）的路径来引用POM元素的值。
 例如，在本节中我们使用过groupId和artifactId来设置构建配置中的finalName元素。这个属性引用的语法是：org.sonatype.mavenbook-${project.artifactId}。
-settings:
+**** settings
 settings变量暴露了Maven settings信息。可以使用点标记（.）的路径来引用settings.xml文件中元素的值。例如，${settings.offline}会引用~/.m2/settings.xml文件中offline元素的值。
 
 除了这三个隐式的变量，你还可以引用系统属性，以及任何在Maven POM中和构建profile中自定义的属性组。
 
 除了这三个隐式的变量，你还可以引用系统属性，以及任何在Maven POM中和构建profile中自定义的属性组。
 
+
+** dependencyManagement
+   顶级元素，管理引用的版本。
+<dependencyManagement>
+	<dependencies>
+
+	</dependencies>
+</dependencyManagement>
+
+** dependencys
+   顶级元素，管理引用。
+<dependencies>
+    <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-core</artifactId>
+	    <version>2.5.6</version>
+    </dependency>
+</dependencies>
+
+** Element : build
+
+Information required to build the project.
+
+Content Model : all(sourceDirectory?, scriptSourceDirectory?, testSourceDirectory?, 
+ outputDirectory?, testOutputDirectory?, extensions?, defaultGoal?, resources?, 
+ testResources?, directory?, finalName?, filters?, pluginManagement?, plugins?)
+
 * setting.xml
 
-<settings xmlns="http://maven.apache.org/POM/4.0.0"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-		    http://maven.apache.org/xsd/settings-1.0.0.xsd">
-<localRepository/>
-<interactiveMode/>
-<usePluginRegistry/>
-<offline/>
-<pluginGroups/>
-<servers/>
-<mirrors/>
-<proxies/>
-<profiles/>
-<activeProfiles/>
+<settings>
+    <localRepository/>
+    <interactiveMode/>
+    <usePluginRegistry/>
+    <offline/>
+    <pluginGroups/>
+    <servers/>
+    <mirrors/>
+    <proxies/>
+    <profiles/>
+    <activeProfiles/>
 </settings>
 
 ** 简单值
@@ -186,3 +188,33 @@ Activation是profile的开启钥匙。如POM中的profile一样，profile的力量来自于它能够在
 
 ** Repositories
 仓库是Maven用来填充构建系统本地仓库所使用的一组远程项目。而Maven是从本地仓库中使用其插件和依赖。不同的远程仓库可能含有不同的项目，而在某个激活的profile下，可能定义了一些仓库来搜索需要的发布版或快照版构件。
+
+* 插件
+** help插件
+
+$ mvn help:describe -Dplugin=help
+$ mvn help:describe -Dplugin=archetype
+
+** archetype插件
+
+建一个 JAVA 项目 ：
+mvn archetype:generate -DgroupId=com.test -DartifactId=App
+
+建一个 web 项目 ：
+ mvn archetype:generate  -DgroupId=com.test -DartifactId=web-app -DarchetypeArtifactId=maven-archetype-webapp -Dversion=1.0
+
+** eclipse插件
+
+Eclipse导入已存在的maven项目 ：
+
+在导入之前需要在项目根目录下面执行如下命令：
+
+普通 Eclipse 项目执行 ： 
+mvn eclipse:eclipse Eclipse
+
+web 项目执行 ： 
+mvn eclipse:eclipse –Dwtpversion=1.0
+
+然后通过Eclipse的maven插件中选择导入已存在的maven项目即可将其导入。
+
+在用eclipse导入web项目时 如果eclipse安装了wtp插件在会自动将其转化为eclipse认得到的web项目，在项目上面点击右键run as 的run on server可以用，但是当eclipse没有安装wtp插件时run on server则不用，此时的解决方式为用命令行切换到项目的根目录然后执行 mvn eclipse:eclipse –Dwtpversion=1.0即可解决。
