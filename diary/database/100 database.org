@@ -1,0 +1,77 @@
+* 概念
+** ACID
+
+ACID，指数据库事务正确执行的四个基本要素的缩写。包含：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）。一个支持事务（Transaction）的数据库，必需要具有这四种特性，否则在事务过程（Transaction processing）当中无法保证数据的正确性，交易过程极可能达不到交易方的要求。
+
+目前主要有两种方式实现ACID：第一种是Write ahead logging，也就是日志式的方式(现代数据库均基于这种方式)。第二种是Shadow paging。
+
+WAL日志是数据库中一种高效的日志算法。从数据库原理而言，它实现的是redo日志模式。即修改数据库时，不直接修改数据库内容，而是将修改完的数据写入日志中，并同步到磁盘上，这样对其他读进程就没有影响。如果数据库崩溃，重启后扫描日志文件，然后更新的数据库中。为了提高效率，WAL日志模式提供checkpoint操作，来定时进行数据更新操作。
+
+** CAP
+
+一致性：Consistency 更新操作成功并返回客户端完成后,分布式的所有节点在同一时间的数据完全一致
+可用性:Availability 读和写操作都能成功
+分区容错性：Partition tolerance 再出现网络故障导致分布式节点间不能通信时，系统能否继续服务
+
+在分布式系统的设计中，没有一种设计可以同时满足一致性，可用性，分区容错性 3个特性
+
+** BASE理论
+
+BASE是Basically Available（基本可用）、Soft state（软状态）和Eventually consistent（最终一致性）三个短语的简写。
+
+BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结，是基于CAP定理逐步演化而来的，其核心思想是即使无法做到强一致性(Strong consistency)，但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性(Eventual consistency)。
+
+** schema
+
+schema是对一个数据库的结构描述。在一个关系型数据库里面，schema定义了表、每个表的字段，还有表和字段之间的关系。
+
+** catalog
+
+catalog是由一个数据库实例的元数据组成的，包括基本表，同义词，索引，用户等等。
+
+** DML 和 DDL
+
+DML(data manipulation language)是数据操纵语言:
+
+SELECT - 从数据库表中获取数据
+UPDATE - 更新数据库表中的数据
+DELETE - 从数据库表中删除数据
+INSERT INTO - 向数据库表中插入数据
+
+DDL（data definition language）是数据定义语言：
+
+CREATE DATABASE - 创建新数据库
+ALTER DATABASE - 修改数据库
+CREATE TABLE - 创建新表
+ALTER TABLE - 变更（改变）数据库表
+DROP TABLE - 删除表
+CREATE INDEX - 创建索引（搜索键）
+DROP INDEX - 删除索引
+
+DCL（DataControlLanguage）是数据库控制语言：
+是用来设置或更改数据库用户或角色权限的语句
+
+** delete truncate
+
+1. truncate 和 delete 只删除数据不删除表的结构(定义)
+
+2. delete 语句是数据库操作语言(dml)，这个操作会放到 rollback segement 中，事务提交之后才生效；如果有相应的 trigger，执行的时候将被触发。
+truncate 是数据库定义语言(ddl)，操作立即生效，原数据不放到 rollback segment 中，不能回滚，操作不触发 trigger。
+
+3.delete 语句不影响表所占用的 extent，高水线(high watermark)保持原位置不动
+truncate 语句缺省情况下见空间释放到 minextents个 extent，除非使用reuse storage；truncate 会将高水线复位(回到最开始)。
+
+4.速度，一般来说: truncate > delete
+
+5.安全性：小心使用 drop 和 truncate，尤其没有备份的时候.否则哭都来不及
+使用上,想删除部分数据行用 delete，注意带上where子句. 回滚段要足够大.
+想保留表而将所有数据删除，如果和事务无关，用truncate即可。如果和事务有关,或者想触发trigger,还是用delete。
+如果是整理表内部的碎片，可以用truncate跟上reuse stroage，再重新导入/插入数据。
+6.delete是DML语句,不会自动提交。drop/truncate都是DDL语句,执行后会自动提交。
+7、TRUNCATE TABLE 在功能上与不带 WHERE子句的 DELETE 语句相同：二者均删除表中的全部行。但TRUNCATE TABLE比DELETE速度快，且使用的系统和事务日志资源少。DELETE 语句每次删除一行，并在事务日志中为所删除的每行记录一项。TRUNCATE TABLE 通过释放存储表数据所用的数据页来删除数据，并且只在事务日志中记录页的释放。 
+
+8、TRUNCATE TABLE删除表中的所有行，但表结构及其列、约束、索引等保持不变。新行标识所用的计数值重置为该列的种子。如果想保留标识计数值，请改用DELETE。如果要删除表定义及其数据，请使用DROP TABLE语句。  
+    
+9、对于由FOREIGN KEY约束引用的表，不能使用TRUNCATE TABLE，而应使用不带WHERE子句的DELETE语句。由于TRUNCATE TABLE不记录在日志中，所以它不能激活触发器。    
+ 
+10、TRUNCATE TABLE不能用于参与了索引视图的表。  

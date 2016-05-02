@@ -1,0 +1,302 @@
+* 运算符
+
+算数：+ - * \ % ++ --
+
+赋值：= += -= *= /= %=
+
+string:+
+
+比较：== === != > < >= <=
+
+逻辑：&& || ！
+
+条件： ? :
+
+** === 
+
+1、如果类型不同，就[不相等] 
+2、如果两个都是数值，并且是同一个值，那么[相等]；(！例外)的是，如果其中至少一个是NaN，那么[不相等]。（判断一个值是否是NaN，只能用isNaN()来判断） 
+3、如果两个都是字符串，每个位置的字符都一样，那么[相等]；否则[不相等]。 
+4、如果两个值都是true，或者都是false，那么[相等]。 
+5、如果两个值都引用同一个对象或函数，那么[相等]；否则[不相等]。 
+6、如果两个值都是null，或者都是undefined，那么[相等]。 
+
+** ==
+
+1、如果两个值类型相同，进行 === 比较。 
+2、如果两个值类型不同，他们可能相等。根据下面规则进行类型转换再比较： 
+   a、如果一个是null、一个是undefined，那么[相等]。 
+   b、如果一个是字符串，一个是数值，把字符串转换成数值再进行比较。 
+   c、如果任一值是 true，把它转换成 1 再比较；如果任一值是 false，把它转换成 0 再比较。 
+   d、如果一个是对象，另一个是数值或字符串，把对象转换成基础类型的值再比较。对象转换成基础类型，利用它的toString或者valueOf方法。js核心内置类，会尝试valueOf先于toString；例外的是Date，Date利用的是toString转换。非js核心的对象，令说
+
+* var
+
+变量又可分为两种不同的数据类型：基本类型和引用类型
+
+基本类型：5种undefined,null,boolean,number和string
+
+** 自动封装
+
+var name = "Tony";
+name.age = 22;
+alert (name.age); //undefined
+
+如果用new String("Tony")就可以。
+
+这个例子中我们会看到我们并没有为字符串name添加上age属性。
+这里面不是没有为字符串name添上age属性，这里存在一个自动封装的问题，字符串是基本类型，而当我们访问或操作字符串的属性、方法时，js会自动将基本类型的字符串封装成对象（类似new String(name)），访问和操作之后再转换为基本类型（类似String的valueOf()），所以name.age = 22这条语句在执行过程中是对封装后的name字符串对象添加属性age，语句执行完之后封装的对象执行域退出，我们将无法再次访问此对象，alert (name.age)这条语句访问的age为再一次封装之后的字符串的属性，已经不是上次的那个对象了，自然是undefined了
+
+** typeof
+
+var s = "Tony";
+var b = true;
+var i = 22;
+var u =
+var n = null;
+var o = new Object;
+
+alert (typeof s); //string
+alert (typeof b); //boolean
+alert (typeof i); //number
+alert (typeof u); //undefined
+alert (typeof n); //object
+alert (typeof o); //object
+typeof操作符可以很好的检测出基本类型。但检测引用类型时并不好用，我们不想知道他是不是对象，而是想知道他是什么类型的对象。
+
+typeof用以获取一个变量的类型，typeof一般只能返回如下几个结果：number,boolean,string,function,object,undefined。
+
+** instanceof
+
+用instanceof操作符 例：
+alert(person instanceof Object);  //变量person是Object吗？
+alert(color instanceof Array);
+alert(color instanceof RegExp);
+
+*** instanceof关键字也不可靠
+
+obj instanceof ClassA;
+
+在上面的语句执行过程中，虚拟机会把ClassA.prototype和obj的_proto_链上的节点逐个进行比较，如果找到相等的节点，则返回true，否则返回false。
+
+如果在new之后修改了ClassA的prototype，instanceof也判断不了类型了。
+
+
+* 匿名函数
+
+匿名函数就是没有名字的函数。他有两种声明方式：
+1.典型的函数声明：
+     function functionName(arg0,arg1,arg2){
+         //函数体
+     }
+2.函数表达式:
+     var functionName = function(arg0,arg1,arg2){
+         //函数体
+     }
+虽然这两种方式在逻辑上市等价的，但是他们还是存在区别的。
+区别1：前者会在代码执行以前被加载到作用域中，而后者则是在代码执行到那一行的时候才会有意义。
+区别2：前者会给函数指定一个名字，而后者则是创建一个匿名函数，然后将这个匿名函数赋给一个变量。
+换句话说上面第二个例子：创建了一个带有3个参数的匿名函数，然后把这个匿名函数赋给了变量functionName，并没有给匿名函数指定名字。
+
+
+* 闭包
+
+（1）闭包的第一个用途，其实上面已经提到了，就是产生它意义：可以读取函数内部的变量
+（2）闭包的第二个用途，那就是：可以让这些变量的值始终保持在内存中
+
+
+* 作用域和作用域链
+
+全局作用域和局部作用域
+
+全局作用域：在代码中任何地方都能访问到的对象拥有全局作用域。在Web浏览器中，他指的就是window对象，该环境直到应用程序退出才被摧毁。 
+局部作用局：和全局作用域相反，局部作用域一般只在固定的代码片段内可访问到（最常见的例如函数内部，所以在一些地方也会看到有人把这种作用域称为函数作用域），该环境中的代码被执行完毕后，该环境被摧毁。
+
+** 全局作用域
+
+最外层函数和在最外层函数外面定义的变量拥有全局作用域
+
+所有未用var定义直接赋值的变量自动声明为拥有全局作用域
+
+所有window对象的属性拥有全局作用域
+
+** 作用域链
+
+var num = 1;
+function total(){
+    alert(num);
+    var num = 2;
+}
+var num = 10;
+total();//undefined
+
+total局部作用域中存在num，但alert在赋值之前调用的，所以undefined
+
+
+* this
+
+this指的是当前函数的对象。
+
+当前函数的对象：函数属于哪个对象，函数不能做为顶层对象，必须属于一个已有对象。
+
+function doSomething(){
+    alert(this===window);
+}
+doSomething();//true
+
+doSomething是window对象的一个属性，所以this指window。
+
+再来看一个更实际的例子：
+
+var test="Tony";
+var myobj={
+    test : "Tom"
+};
+function testCall(name, age){
+    alert(this.test + ":" + name + age);  
+}
+
+testCall ("Tony",23);//普通调用 结果Tony:Tony23
+myobj.f=testCall;
+myobj.f("Tony",23);// apply调用结果Tom:Tony23
+
+** 闭包中的this
+
+var name ="The Window"; 
+var object = { 
+    name:"My Object",
+    doSomething:function(){
+        return function(){
+            return this.name;
+        };
+    }
+};
+alert(object.doSomething()());//"The Window"
+
+因为返回的闭包属于window对象，所以this是window对象。
+
+解决方法：
+
+将主函数this传入闭包函数
+
+var name ="The Window";                    
+var object = {                      
+    name:"My Object",              
+    doSomething:function(){
+            var self = this ;        
+            return function(){      
+                return self.name;   
+            };
+    }
+};
+alert(object.doSomething()());
+
+** call和apply
+
+如果我们调用函数的时候，想让函数里的 this 代表别的对象，而不是当前函数的对象。有什么办法呢？
+
+var test="Tony";
+var myobj={
+    test : "Tom"
+};
+function testCall(name, age){
+    alert(this.test + ":" + name + age);  
+}
+testCall ("Tony",23);//普通调用 结果Tony:Tony23
+testCall.call(myobj,"Tony",23);//call调用结果Tom:Tony23
+testCall.apply (myobj,["Tony",23]);// apply调用结果Tom:Tony23
+
+
+* 对象
+
+** 获取属性
+
+obj.vname=123
+
+obj.vname
+
+obj["vname"]
+
+var v="vname"
+obj[v]
+
+** new关键字的作用
+
+创建具备特定类型的对象可以通过使用new关键字用构造函数模式来完成。
+function ClassA(){
+ this.name=" ClassA ";
+}
+var p = new ClassA ();
+在这个过程中，相当于以ClassA ()为“模版”创建了一个新对象p，它具备ClassA构造器中的成员变量和构造器原型。并且ClassA将this设置为p。
+
+过程模拟:
+ var p = {};
+ ClassA.apply(p);
+ p.__proto__= ClassA.prototype;
+
+在调用构造函数的过程中会经历以下4个步骤：
+1.	创建一个新对象
+2.	将构造函数的作用域赋给新对象(因此this指向这个新对象)
+3.	执行构造函数中的代码(为这个新对象添加属性)
+4.	返回新对象
+接下来说说构造函数里包含return的情况
+构造函数在没有指定返回值的情况下，默认会返回新对象实例。
+如果指定的返回值是基本数据类型的话，仍然会返回新对象实例。
+function A(){
+ this.x=3;
+ return "OK";
+}
+var a = new A();
+alert(a instanceof A )// true;
+alert("x" in a )// true
+如果指定返回对象了的话，被返回的对象就成了指定的对象值。在这种情况下，this值所引用的对象就被丢弃了。
+function B(){
+    this.x=3;
+    return Object("OK");
+}
+var b = new B();
+alert("x" in b )//false
+alert(b instanceof B )//false
+alert(b instanceof String )//true
+
+
+** prototype和原型链
+
+
+
+*** 原型链的由来
+
+var obj = new ClassA ();
+过程模拟:
+ var obj = {};
+ ClassA.apply(obj);
+ obj.__proto__= ClassA.prototype;
+
+在new之前对ClassA的prototype进行修改，就可以创建原型链。
+
+*** 属性搜索
+
+hasOwnProperty方法是来判定对象是否包含指定名称的属性，不会向原型链搜索。
+
+要想搜索原型链可以用in关键字（'constructor' in obj）。
+
+*** constructor
+
+一个对象如何知道是哪个函数构造的它呢？通过constructor属性可以知道。
+
+function Person(name) {};  
+alert(Person.prototype.constructor===Person);//true
+
+constructor属性是对象原型中的属性。
+
+function Person(name) {};  
+alert(Person.prototype.constructor===Person);//true
+
+更改class的prototype要手工设置constructor
+function ClassA(){}
+function ClassB(){}
+ClassB.prototype=new ClassA();
+ClassB.prototype.constructor=ClassB;
+var obj=new ClassB();
+
+

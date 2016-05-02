@@ -1,0 +1,77 @@
+http://my.oschina.net/realfighter/blog?catalog=585558
+
+
+* Thread
+
+
+
+* IO
+
+** innodb_buffer_pool_size
+
+innodb_buffer_pool_size参数表示缓冲池字节大小，InnoDB缓存表和索引数据的内存区域。
+
+如果设定的缓冲池的大小大于1G，设置innodb_buffer_pool_instances的值大于1，在服务器繁忙的时候可以提高伸缩性，不过在实际的测试中，发现带来的性能提升并不明显
+
+** innodb_buffer_pool_instances
+
+1 innodb_buffer_pool_instances可以开启多个内存缓冲池，把需要缓冲的数据hash到不同的缓冲池中，这样可以并行的内存读写。
+
+2 innodb_buffer_pool_instances 参数显著的影响测试结果，特别是非常高的 I/O 负载时。
+
+3 实验环境下， innodb_buffer_pool_instances=8 在很小的 buffer_pool 大小时有很大的不同，而使用大的 buffer_pool 时，innodb_buffer_pool_instances=1 的表现最棒。
+
+** innodb_log_buffer_size 
+
+ innodb_log_buffer_size表示InnoDB写入到磁盘上的日志文件时使用的缓冲区的字节数，默认值为8M。一个大的日志缓冲区允许大量的事务在提交之前不写日志到磁盘。因此，如果你有很多事务的更新，插入或删除很操作，通过这个参数会大量的节省了磁盘I / O。
+
+** innodb_log_file_size       
+
+ innodb_log_file_size表示在一个日志组每个日志文件的字节大小。日志文件的总大小（innodb_log_file_size* innodb_log_files_in_group）不能超过最高值512GB。
+
+默认值是48M。比较合适的值的范围是从1MB到1 / N个的缓冲池大小，其中N是该组中的日志文件的数量。该值越大，缓冲池中必要的检查点刷新活动就会越少，节省磁盘I/ O。但是越大的日志文件，mysql的崩溃恢复就越慢，尽管在mysql5.5之后改进了恢复性能和日志文件恢复的代价。
+
+
+** key_buffer_size = 16M     
+    这个参数的含义是：MyISAM表用于索引块的缓冲区大小，可以被所有线程所共享，默认值是8388608（即8M），它是对MyISAM表性能影响最大的一个参数，如果数据库存储引擎为InnoDB类型，这个参数是无效的。可以通过增大这个值，以便索引更好的处理所有读和多写操作。
+
+innodb_lock_wait_timeout = 20    
+
+    表示InnoDB事务从等待获取行锁到放弃的时间长度，默认的值为50秒。一个事务试图获取被另一个InnoDB事务锁定的行所等待的最大时间，超时时会发出以下错误信息：
+    ERROR 1205 (HY000)： Lock wait timeout exceeded； try restarting transaction（锁等待超时，试图重启事务）
+
+** max_connections     
+
+    系统变量，它表示最大允许的并发客户端连接数，会影响在服务器上运行的线程数量，默认值是151，增加该值会增加mysqld请求的文件描述符的数量。如果所请求的描述符的数量不可用，服务器会减少max_connections的值。连接拒绝是因为，max_connections的最大值，达到了Connection_errors_max_connections状态变量的增量。
+
+** max_user_connections     
+
+    表示允许任何给定的MySQL用户帐户同时连接的最大数目。默认值为0表示不限制。此变量可以在服务器启动时或运行时设置一个全局值。它也有一个只读会话值，表示与当前会话相关联的帐户的有效同时连接的限制值。
+
+** skip-external-locking作用
+
+    在Mysql Linux 的发行版中，默认存在一行skip-external-locking，它表示跳过外部锁定，与之相对，External-locking变量表示启用外 部锁定，用于多线程条件下对MyISAM数据表进行锁定，默认情况下mysql是禁用外部锁定的，在现实生产中，我们的业务环境是单服务器环境，不需要外 部锁定，所以将其禁用。
+
+** thread_cache_size设置为20的依据
+
+    这个参数的设置与max_connections有关，max_connections表示最大允许的并发客户端连接数，会影响在服务器上运行的线程数量，默认值是151，thread_cache_size 的设置，官方doc建议公式：8+（max_connections / 100）,这与现实的业务也存在关系，当服务器并发很大时，需要修改max_connections的值以满足业务需要，在我们的现实业务 中，thread_cache_size设置为20较为合适。
+
+** table_open_cache=64 设置是否过小
+
+    这个参数的设置最好根据现实生产环境进行设置，在mysql命令行通过show global status like 'open%_tables%'，可以查到两个重要的参数，如下：
+
+    +---------------+-------+
+
+    | Variable_name | Value |
+
+    +---------------+-------+
+
+    |  Open_tables   | 81    |
+
+    | Opened_tables | 88    |
+
+    +---------------+-------+
+
+    对与大多数的服务器设置，建议参考一下公式：Open_tables / Opened_tables >= 0.85；Open_tables / table_open_cache <= 0.95
+
+    但是并不是设置table_open_cache越大越好，因为table_cache加大后，使得mysql对 SQL响应的速度更快了，不可避免的会产生更多的死锁（dead lock），这样反而使得数据库整个一套操作慢了下来，严重影响性能。所以平时维护中还是要根据库的实际情况去作出判断，找到最适合你维护的库的 table_open_cache值。

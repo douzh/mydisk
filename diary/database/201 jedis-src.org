@@ -1,0 +1,15 @@
+* interface Hashing
+
+计算一致性hash值
+
+** Hashing.MD5内部类
+
+取128位的后32位，拼成long
+
+long res = ((long) (bKey[3] & 0xFF) << 24) | ((long) (bKey[2] & 0xFF) << 16)
+          | ((long) (bKey[1] & 0xFF) << 8) | (long) (bKey[0] & 0xFF);
+
+“& 0xff” 是为了防止字节最高位为1，产生大负数。
+
+** MurmurHash implements Hashing
+

@@ -1,0 +1,22 @@
+* Cxf有四个主要的类：
+Service：它是对应WebService服务类及其操作的抽象代表，包括数据绑定类型、正在使用的拦截器等其他信息。
+
+Endpoint：它可以接收消息，其主要功能是持有拦截器，并且可以监听出现的错误，客户端和服务端都需要使用到Endpoint。
+
+Server：服务端的代表。提供可以开始/结束Server、访问Endpoint的钩子。
+
+Client：客户端的代表，可以管理客户端的消息。
+
+* Cxf还有四个主要的帮忙创建服务端和客户端的工厂类：
+
+AbstractServiceFactoryBean：
+它主要负责从一个WSDL文件或者class文件创建对应的Service，同时也可以设置一些数据绑定、拦截器等信息。它通常是藏在Server/ClientFactoryBean后面工作的，我们不会直接去使用它。常用的类有ReflectionServiceFactoryBean、JaxWsServiceFactoryBean。
+
+ServerFactoryBean：
+创建Server端，常用的类有ServerFactoryBean、JaxWsServerFactoryBean。
+
+ClientFactoryBean：
+创建Client端，常用的类有ClientFactoryBean、JaxWsClientFactoryBean。
+
+ClientProxyFactoryBean：
+根据Client创建一个代理类，常用的类有ClientProxyFactoryBean、JaxWsProxyFactoryBean。

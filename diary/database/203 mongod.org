@@ -1,0 +1,36 @@
+* 基础
+$ ./mongod
+mongod.exe
+
+运行shell
+
+$ ./mongo
+
+切换数据库
+
+>use dbname
+
+会把数据库赋给全局变量db，以后可以用db直接访问
+
+查看方法源码：
+方法调用不加括号
+
+访问格式
+
+db.集合.文档
+
+db.blog.insert(一个js对象)
+
+db.blog.find(条件)
+db.blog.findOne()
+
+db.blog.update(条件,新对象)
+
+db.blog.remove(条件)
+
+
+* 索引
+
+db.集合.ensureIndex({key:val,key:val})
+
+db.集合.ensereIndex({},{})

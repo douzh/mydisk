@@ -1,0 +1,72 @@
+http://www.cnblogs.com/wuchanming/category/626165.html
+
+* max-heapity(A,i)
+MAX-HEAPIFY是用于维护最大堆性质的重要过程。它的输入是一个数组arr和一个下标i和数组长度。通过让arr[i]的值在最大堆中”逐级下降“，从而使得以下标i为根结点的子树重新遵循最大堆的性质。
+
+//递归的调整堆
+void MaxHeapity(int arr[],int i,int n)
+{
+    int lchild,rchild;
+    int largest;
+    lchild=LEFT(i);
+    rchild=lchild+1;
+    if(lchild<=n-1&&arr[i]<arr[lchild])
+        largest=lchild;
+    else
+        largest=i;
+    if(rchild<=n-1&&arr[rchild]>arr[largest])
+    {
+        largest=rchild;
+    }
+    //largest==i既可以判断要调整的点是否还存在左子树和右子树也可以判断要调整的节点的值是否大于其子树
+    if(largest!=i)
+    {
+        swap(&arr[largest],&arr[i]);
+        MaxHeapity(arr,largest,n);
+    }
+}
+
+* 建堆
+
+//建堆
+void BuildMaxHeap(int arr[],int n)
+{
+    int i;
+    for((i=n/2-1);i>=0;i--)
+    {
+        MaxHeapity(arr,i,n);
+    }
+}
+
+我们可以用自底向上的方法利用过程MAX-HEAPIFY把一个大小为n的数组arr[0..n]转换为最大堆。我们指定，子数组arr[n/2]...a[n-1]中的元素都是叶子节点。每个叶节点都可以看成只含有一个元素的堆。过程BUILD-MAX-HEAP对树中的其他结点都调用一次MAX-HEAPIFY。
+
+* 堆排序算法
+
+初始时候，堆排序算法利用BUILD-MAX-HEAP将输入数组arr[0...n-1]建成最大堆。因为数组中的最大元素总在根结点arr[0]中，通过把它与arr[n-1]进行交换，我们可以让该元素放到正确的位置。这时候，如果我们从堆中去掉结点n-1，剩余的结点中，原来根的孩子结点仍然是最大堆，而新的根结点可能会违背最大堆的性质。为了维护最大堆的性质，我们要做的是调用MAX-HEAPIFY(arr,0,n-1)，从而在arr[0..n-2]上构造一个新的最大堆。堆排序算法会不断重复这一过程。直到堆的大小从n-1降到1.
+
+//堆排序
+void HeapSort(int arr[],int n)
+{
+    int i;
+    BuildMaxHeap(arr,n);
+    for(i=n-1;i>0;i--)
+    {
+        swap(&arr[0],&arr[i]);
+        MaxHeapity(arr,0,i);
+    }
+}
+
+* 完全二叉树
+
+完全二叉树第i层至多有2^（i-1）个节点，
+共i层的完全二叉树最多有2^i-1个节点。
+
+最后一个非叶子节点为n div 2
+
+对于tree[i]，有如下特点：
+（1）若i为奇数且i>1，那么tree的左兄弟为tree[i-1]；
+（2）若i为偶数且i<n，那么tree的右兄弟为tree[i+1]；
+（3）若i>1，tree的双亲为tree[i div 2]；
+（4）若2*i<=n，那么tree的左孩子为tree[2*i]；若2*i+1<=n，那么tree的右孩子为tree[2*i+1]；
+（5）若i>n div 2,那么tree[i]为叶子结点（对应于（3））；
+（6）若i<(n-1) div 2.那么tree[i]必有两个孩子（对应于（4））。

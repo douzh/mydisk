@@ -1,0 +1,282 @@
+http://haohaoxuexi.iteye.com/blog/1985995 
+
+Jax-ws是WebService的一种规范。
+
+* 定义
+Jax-ws的WebService定义是通过注解进行的，我们必须在其WebService类的接口上使用@WebService注解进行标记。
+
+@WebService
+public interface HelloWorld {
+ 
+   public String sayHi(String who);
+   
+}
+
+public class HelloWorldImpl implements HelloWorld {
+ 
+   @Override
+   public String sayHi(String who) {
+      return"Hi, " + who;
+   }
+ 
+}
+
+* 发布
+
+public class Server {
+ 
+   private final static String ADDRESS = "http://localhost:8080/test/jaxws/services/HelloWorld";
+   
+   public static void main(String args[]) {
+      HelloWorld hw = new HelloWorldImpl();
+      Endpoint.publish(ADDRESS, hw);
+   }
+   
+}
+
+
+
+public class Server {
+ 
+   private final static String ADDRESS = "http://localhost:8080/test/jaxws/services/HelloWorld";
+   
+   public static void main(String args[]) {
+      HelloWorld hw = new HelloWorldImpl();
+      JaxWsServerFactoryBean jwsFactory = new JaxWsServerFactoryBean();
+      jwsFactory.setAddress(ADDRESS);   //指定WebService的发布地址
+      jwsFactory.setServiceClass(HelloWorld.class);//WebService对应的类型
+      jwsFactory.setServiceBean(hw);//WebService对应的实现对象
+      jwsFactory.create();
+   }
+   
+}
+
+
+发布之后我们就可以通过发布地址?wsdl查看WebService的定义了（WSDL是Web Service Description Language的简称，即网络服务描述语言）。通过在浏览器输入http://localhost:8080/test/jaxws/services/HelloWorld?wsdl我们可以看到wsdl信息。
+
+我们可以看到在上面我们的sayHi操作的参数who变成了arg0，这是因为接口在被编译为class文件的时候不能保存参数名，有时候这会影响可读性。如果需要参数名显示的可读性强一些的话，我们可以使用@WebParam来指定。
+
+@WebService(serviceName="!@#$%^", name="123456")
+public interface HelloWorld {
+ 
+   public String sayHi(@WebParam(name="who") String who);
+   
+}
+
+* @WebService
+
+@WebService的serviceName可以用来指定service的名称。
+
+默认情况下如果Service是通过Endpoint.publish()方法发布的则serviceName为实现类的简单名称+Service（如HelloWorldImplService）。
+
+如果是通过JaxWsServerFactoryBean的create方法发布的则为接口的简单名称+Service（如HelloWorldService）。
+
+name属性可以用来指定service对应的portName。
+
+默认情况下如果Service是通过Endpoint.publish()方法发布的则portName为实现类的简单名称+Port（如HelloWorldImplPort）。
+
+如果是通过JaxWsServerFactoryBean的create方法发布的则为接口的简单名称+Port（如HelloWorldPort）。
+
+1、serviceName： 对外发布的服务名，指定 Web Service 的服务名称：wsdl:service。缺省值为 Java 类的简单名称 + Service。（字符串）
+2、endpointInterface： 服务接口全路径, 指定做SEI（Service EndPoint Interface）服务端点接口
+3、name：此属性的值包含XML Web Service的名称。在默认情况下，该值是实现XML Web Service的类的名称，wsdl:portType 的名称。缺省值为 Java 类或接口的非限定名称。（字符串
+4、portName：  wsdl:portName。缺省值为 WebService.name+Port。
+5、targetNamespace：指定你想要的名称空间，认是使用接口实现类的包名的反缀
+6、wsdlLocation：指定用于定义 Web Service 的 WSDL 文档的 Web 地址。Web 地址可以是相对路径或绝对路径。（字符串）
+注意：实现类上可以不添加Webservice注解  
+
+* @WebMethod
+
+@WebMethod是用来标注在WebService的方法即操作上的，通过它我们可以指定某一个操作的操作名、使用SOAP绑定时的Action名称，以及该方法是否允许发布为WebService。@WebMethod有三个属性：operationName、action和exclude。@WebMethod还是挺有用的，当你发布的WebService中有方法不希望WebService访问的时候就可以通过@WebMethod来指定将其排除在外。下面我们来介绍一下使用WebMethod排除WebService中的一个方法。
+
+ 1、operationName：指定与此方法相匹配的wsdl:operation 的名称。缺省值为 Java 方法的名称。（字符串）
+ 2、action：定义此操作的行为。对于 SOAP 绑定，此值将确定 SOAPAction 头的值。缺省值为 Java 方法的名称。（字符串）
+ 3、exclude：指定是否从 Web Service 中排除某一方法。缺省值为 false。（布尔值）  
+
+   @Override
+   @WebMethod(exclude=true)
+   public String sayHello(String who) {
+      return"Hello, " + who;
+   }
+
+
+
+* @Oneway
+
+@Oneway是标注在Service接口的操作方法上的。使用@Oneway标注的方法表示它不需要等待服务端的返回，也不需要预留资源来处理服务端的返回。
+
+* @WebParam
+
+1、name ：参数的名称。如果操作是远程过程调用（RPC）类型并且未指定partName 属性，那么这是用于表示参数的 wsdl:part 属性的名称。
+如果操作是文档类型或者参数映射至某个头，那么 -name 是用于表示该参数的 XML 元素的局部名称。如果操作是文档类型、
+参数类型为 BARE 并且方式为 OUT 或 INOUT，那么必须指定此属性。（字符串）   
+2、partName：定义用于表示此参数的 wsdl:part属性的名称。仅当操作类型为 RPC 或者操作是文档类型并且参数类型为BARE 时才使用此参数。（字符串）
+3、targetNamespace：指定参数的 XML 元素的 XML 名称空间。当属性映射至 XML 元素时，仅应用于文档绑定。缺省值为 Web Service 的 targetNamespace。（字符串）
+4、mode：此值表示此方法的参数流的方向。有效值为 IN、INOUT 和 OUT。（字符串）
+5、header：指定参数是在消息头还是消息体中。缺省值为 false。（布尔值）
+
+* @WebResult
+
+1、name：当返回值列示在 WSDL 文件中并且在连接上的消息中找到该返回值时，指定该返回值的名称。对于 RPC 绑定，这是用于表示返回值的 wsdl:part属性的名称。对于文档绑定，-name参数是用于表示返回值的 XML 元素的局部名。对于 RPC 和 DOCUMENT/WRAPPED 绑定，缺省值为 return。对于 DOCUMENT/BARE 绑定，缺省值为方法名 + Response。（字符串）
+2、targetNamespace：指定返回值的 XML 名称空间。仅当操作类型为 RPC 或者操作是文档类型并且参数类型为 BARE 时才使用此参数。（字符串）
+3、header：指定头中是否附带结果。缺省值为false。（布尔值）
+4、partName：指定 RPC 或 DOCUMENT/BARE 操作的结果的部件名称。缺省值为@WebResult.name。（字符串）
+
+* @HandlerChain 
+
+注释用于使 Web Service 与外部定义的处理程序链相关联。只能通过对 SEI 或实现类使用 @HandlerChain 注释来配置服务器端的处理程序。
+但是可以使用多种方法来配置客户端的处理程序。可以通过对生成的服务类或者 SEI 使用 @HandlerChain 注释来配置客户端的处理程序。此外，可以按程序在服务上注册您自己的 HandlerResolver 接口实现，或者按程序在绑定对象上设置处理程序链。
+		
+1、file：指定处理程序链文件所在的位置。文件位置可以是采用外部格式的绝对 java.net.URL，也可以是类文件中的相对路径。（字符串）
+2、name：指定配置文件中处理程序链的名称。
+
+
+* 访问
+public class Client {
+ 
+   private final static String ADDRESS = "http://localhost:8080/test/jaxws/services/HelloWorld";
+   
+   public static void main(String args[]) {
+      JaxWsProxyFactoryBean jwpFactory = new JaxWsProxyFactoryBean();
+      jwpFactory.setAddress(ADDRESS);
+      jwpFactory.setServiceClass(HelloWorld.class);
+      HelloWorld hw = (HelloWorld)jwpFactory.create();
+      String response = hw.sayHi("world");
+      System.out.println(response);
+   }
+   
+}
+
+
+   //第一个参数为服务发布的targetNameSpace，可以通过查看对应的wsdl文件获得，默认是发布Service所在包的包名倒过来的形式；第二个参数是serviceName
+   private final static QName SERVICE_NAME = new QName("http://jaxws.sample.cxftest.tiantian.com/", "HelloWorldService");
+   //第一个参数是服务发布的targetNameSpace，第二个参数是portName
+   private final static QName PORT_NAME = new QName("http://jaxws.sample.cxftest.tiantian.com/", "HelloWorldPort");
+   //服务发布的地址
+   private final static String ADDRESS = "http://localhost:8080/test/jaxws/services/HelloWorld";
+   
+   public static void main(String args[]) {
+      Service service = Service.create(SERVICE_NAME);
+      //根据portName、服务发布地址、数据绑定类型创建一个Port。
+      service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ADDRESS);//默认是SOAP1.1Binding
+      //获取服务
+      HelloWorld hw = service.getPort(HelloWorld.class);
+      String response = hw.sayHi("world");
+      System.out.println(response);
+   }
+* 基于Spring
+
+** web.xml
+
+   <!-- Jax-ws实现 -->
+   <servlet>
+      <display-name>jaxws-cxf</display-name>
+      <servlet-name>jaxws-cxf</servlet-name>
+      <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+      <init-param>
+         <param-name>config-location</param-name>
+         <param-value>WEB-INF/jaxws-cxf-servlet.xml</param-value>
+      </init-param>
+   </servlet>
+ 
+   <servlet-mapping>
+      <servlet-name>jaxws-cxf</servlet-name>
+      <url-pattern>/jaxws/services/*</url-pattern>
+   </servlet-mapping>
+
+** cxf-servlet.xml
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+   xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+ 
+   <!-- 相当于使用Endpoint.publish()进行服务发布 -->
+   <jaxws:endpoint address="/HelloWorld" implementorClass="com.tiantian.cxftest.sample.jaxws.HelloWorldImpl"/>
+ 
+   <!-- 相当于使用JaxWsServerFactoryBean进行服务发布 -->
+   <jaxws:server address="/HelloWorld2" serviceClass="com.tiantian.cxftest.sample.jaxws.HelloWorldImpl"/>
+   
+   <!-- JaxWsServerFactoryBean使用外部bean作为服务进行发布 -->
+   <jaxws:server address="/HelloWorld3" serviceBean="#hw"/>
+   <!-- 普通bean对象 -->
+   <bean id="hw" class="com.tiantian.cxftest.sample.jaxws.HelloWorldImpl"/>
+   
+   <!-- JaxWsServerFactoryBean使用内部bean作为服务进行发布 -->
+   <jaxws:server address="/HelloWorld4">
+      <jaxws:serviceBean>
+         <bean class="com.tiantian.cxftest.sample.jaxws.HelloWorldImpl"/>
+      </jaxws:serviceBean>
+   </jaxws:server>
+ 
+</beans>
+
+** 获取
+
+*** Jaxws命名空间
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+   xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+ 
+   <jaxws:client id="hw"
+      address="http://localhost:8080/test/jaxws/services/HelloWorld"
+      serviceClass="com.tiantian.cxftest.sample.jaxws.HelloWorld" />
+ 
+   <jaxws:client id="hw2"
+      address="http://localhost:8080/test/jaxws/services/HelloWorld2"
+      serviceClass="com.tiantian.cxftest.sample.jaxws.HelloWorld"/>
+ 
+</beans>
+
+*** JaxWsProxyFactoryBean
+
+   <bean id="factoryBean" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+      <property name="address" value="http://localhost:8080/test/jaxws/services/HelloWorld"/>
+      <property name="serviceClass" value="com.tiantian.cxftest.sample.jaxws.HelloWorld"/>
+   </bean>
+  
+   <bean id="helloWorld" factory-bean="factoryBean" factory-method="create"/>
+
+*** 调用
+
+public class SpringClient {
+
+	public static void main(String args[]) {
+		ApplicationContext context = new ClassPathXmlApplicationContext("jaxws-cxf-client.xml");
+		accessService(context, "hw");
+		accessService(context, "hw2");
+		accessService(context, "hw3");
+		accessService(context, "hw4");
+		accessService(context, "helloWorld");
+	}
+	
+	private static void accessService(ApplicationContext context, String beanName) {
+		HelloWorld hw = context.getBean(beanName, HelloWorld.class);
+		System.out.println(hw.sayHi("world"));
+	}
+	
+}
+
+
+* 工具
+
+
+** java2ws
+
+ Cxf为我们提供了一个java2ws工具。通过该工具我们可以根据SEI（Service Endpoint Implementation的缩写）类及其相关的类来生成WebService的服务端、客户端和wsdl文件等。SEI需要是使用了@WebService标注的Service接口或类。
+
+Cxf为java2ws工具提供了一个Maven的插件，叫cxf-java2ws-plugin。所以当我们的项目是使用Maven的时候我们可以在项目的pom.xml文件中加入Cxf提供的cxf-java2ws-plugin，这样当我们执行Maven的某个操作的时候就会触发java2ws指令生成对应的代码。
+
+** wsdl2java
+
+如果我们已经有了wsdl定义文件的话，我们就可以通过wsdl文件生成对应的Java代码，包括WebService的Service类定义、服务端代码、客户端代码等。这里主要介绍两种WSDL生成Java代码的方式。
+
+wsdl2java是CXF自带的工具，在CXF根目录下的bin目录下。我们可以在命令行使用这一工具。
+
+** cxf-codegen-plugin
+
+ cxf-codegen-plugin是cxf针对于maven的一个插件。当我们的项目是基于Maven的项目时，我们可以在pom.xml文件中引入cxf-codegen-plugin
