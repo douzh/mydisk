@@ -1,0 +1,74 @@
+质量平台搭建经验
+
+** sonar安装与使用
+sonar5以上不用runner了，用maven插件调用就可以。
+网址：
+http://www.sonarqube.org/ 
+下载sonarqube-5.4.zip后解压到指定目录。
+
+*** 配制文件修改
+
+sonarqube-5.4\conf\sonar.properties
+数据库配制：
+sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
+sonar.jdbc.username=root
+sonar.jdbc.password=123456
+
+sonar 配制：
+sonar.sorceEncoding=UTF-8
+sonar.login=admin
+sonar.password=admin
+
+*** 启动
+
+用bin目录下的脚本启动
+
+
+** Maven配制
+
+*** settings.xml
+在profiles节点添加全局配制：
+<profile>
+    <id>sonar</id>
+    <activation>
+	<activeByDefault>true</activeByDefault>
+    </activation>
+    <properties>
+	<sonar.host.url>http://localhost:9000</sonar.host.url>
+</properties>
+
+*** 项目pom.xml
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>2.3.2</version>
+    <configuration>
+	<source>1.7</source>
+	<target>1.7</target>
+	<compilerArguments>
+	<!-- <extdirs>\WebRoot\WEB-INF\lib</extdirs>-->
+	</compilerArguments>
+    </configuration>
+</plugin>
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-war-plugin</artifactId>
+    <version>2.2</version>
+    <configuration>
+    <webResources>
+	    <resource>
+		    <directory>WebRoot</directory>
+	    </resource>
+    </webResources>
+    </configuration>
+</plugin>
+
+** Svn
+
+sonar scm会调用svn客户端命令，所以要安装好客户端，配制好用户名和密码，不用输入。
+
+** jenkins
+
+
