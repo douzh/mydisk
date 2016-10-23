@@ -142,22 +142,3 @@ public class RelativePathUriTemplateController {
 ** @ModelAttribute
 
 该注解有两个用法，一个是用于方法上，一个是用于参数上；
-* 组件
-** HandlerMapping
-根据请求获取Handler
-** HandlerAdapter
-执行Handler
-** HandlerExceptionResoler
-解析出View
-** ViewResoler
-
-** RequestToViewNameTranslator
-
-** LocaleResolver
-返回ViewResoler所需要的Locale对象
-** ThemeResolver
-解析出主题名，ThemeSource根据主题名找到主题Theme
-** MultipartResolver
-处理上传请求。
-** FlashMapManager
-
