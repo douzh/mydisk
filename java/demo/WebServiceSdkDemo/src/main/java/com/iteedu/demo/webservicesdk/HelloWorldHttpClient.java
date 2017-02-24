@@ -16,14 +16,15 @@ import org.apache.http.util.EntityUtils;
 public class HelloWorldHttpClient {
 	public static void main(String[] args) throws ClientProtocolException,
 			IOException {
-		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(30)
-                .setConnectTimeout(30).setSocketTimeout(30).build();
-		 CloseableHttpClient httpClient = HttpClients.custom()
-	                .setDefaultRequestConfig(requestConfig).build();
+		RequestConfig requestConfig = RequestConfig.custom()
+				.setConnectionRequestTimeout(30).setConnectTimeout(30)
+				.setSocketTimeout(30).build();
+		CloseableHttpClient httpClient = HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig).build();
 		HttpPost httpPost = new HttpPost("http://localhost:8080/helloWorld");
 		StringEntity entity = new StringEntity(getRequestXML(), "UTF-8");
 		httpPost.setEntity(entity);
-		httpPost.setHeader("Content-Type", "text/xml; charset="+"UTF-8");
+		httpPost.setHeader("Content-Type", "text/xml; charset=" + "UTF-8");
 		httpPost.setHeader("SOAPAction", "");
 		CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -34,14 +35,16 @@ public class HelloWorldHttpClient {
 			result = EntityUtils.toString(httpEntity, "UTF-8");
 		} else { // 如果返回非200，则手动关闭连接
 			httpPost.abort();
-			System.out.println("get status code {} from server:"+ httpResponse.getStatusLine().getStatusCode());
+			System.out.println("get status code {} from server:"
+					+ httpResponse.getStatusLine().getStatusCode());
 		}
 		System.out.println(result);
 	}
 
 	public static String getRequestXML() {
-		StringBuilder sb = new StringBuilder(
-				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://webservicesdk.demo.iteedu.com/\">");
+		StringBuilder sb = new StringBuilder("<soapenv:Envelope");
+		sb.append(" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"");
+		sb.append(" xmlns:web=\"http://webservicesdk.demo.iteedu.com/\">");
 		sb.append("   <soapenv:Header/>");
 		sb.append("   <soapenv:Body>");
 		sb.append("      <web:sayHiToUser>");
