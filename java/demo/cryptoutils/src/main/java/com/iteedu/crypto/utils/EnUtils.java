@@ -2,7 +2,6 @@ package com.iteedu.crypto.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -12,13 +11,16 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import cn.org.nifa.prmis.modules.task.crypto.utils.CryptoException;
+
 /**
  * 加密工具类
  * 
  */
-public class EnUtils{
+public class EnUtils {
 
-    private static final String DEFAULT_ENCODING = "UTF-8";
+	private static final String DEFAULT_ENCODING = "UTF-8";
+
 	/**
 	 * 私有构造，限制创建
 	 */
@@ -26,15 +28,23 @@ public class EnUtils{
 
 	}
 
-	/** RSA公钥加密明文
-     * 
-     * @param content
-     *            待加密明
-     * @return 密文
-     * @throws CryptoException
-     * @throws UnsupportedEncodingException */
-    public static String rsaEnc(String content, String pk) throws CryptoException, UnsupportedEncodingException {
-        return rsaEnc(content.getBytes(DEFAULT_ENCODING), pk);
+	/**
+	 * RSA公钥加密明文
+	 * 
+	 * @param content
+	 *            待加密明
+	 * @return 密文
+	 * @throws CryptoException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String rsaEnc(String content, String pk) throws CryptoException {
+		byte[] byteContent = null;
+		try {
+			byteContent = content.getBytes(DEFAULT_ENCODING);
+		} catch (Exception e) {
+			throw new CryptoException("内部解码异常", e);
+		}
+		return rsaEnc(byteContent, pk);
 	}
 
 	/**
@@ -52,8 +62,8 @@ public class EnUtils{
 			if (is.read(pubbytes) > 0) {
 				KeyFactory keyf = KeyFactory.getInstance("RSA");
 				Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-                X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(
-                        CryptoUtils.base64Decode(new String(pubbytes, DEFAULT_ENCODING)));
+				X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(
+						CryptoUtils.base64Decode(new String(pubbytes, DEFAULT_ENCODING)));
 
 				PublicKey pubkey = keyf.generatePublic(pubX509);
 				cipher.init(Cipher.ENCRYPT_MODE, pubkey);
