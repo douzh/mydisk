@@ -5,7 +5,10 @@ import java.util.List;
 
 import com.iteedu.datacenter.stock.xueqiu.XueqiuApi;
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
+import com.iteedu.datacenter.stock.xueqiu.task.CalcAveRoeTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayPBTask;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdateListdateTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateZycwzbTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.mongodb.MongoClient;
@@ -20,27 +23,27 @@ public class App {
 
 		try {
 			// 连接到 mongodb 服务
-			MongoClient mongoClient = new MongoClient("localhost", 27017);
+			MongoClient mongoClient = new MongoClient("localhost", 9080);
 			// 连接到数据库
 			MongoDatabase db = mongoClient.getDatabase("stock");
 			System.out.println("Connect to database successfully");
 			// List<TStock> lstStock=XueqiuApi.initStocklist(db);
 			List<TStock> lstStock = XueqiuApi.getStocklist(db);
 			for (TStock s : lstStock) {
-				TaskExecutor.submitTask(new UpdateKLineDayPBTask(new TaskParam(
-						s, db)));
+				// TaskExecutor.submitTask(new UpdateKLineDayTask(new
+				// TaskParam(s, db)));
+				 TaskExecutor.submitTask(new UpdateKLineDayPBTask(new
+				 TaskParam(s, db)));
+				// TaskExecutor.submitTask(new UpdateListdateTask(new
+				// TaskParam(s, db)));
+//				 TaskExecutor.submitTask(new CalcAveRoeTask(new
+//				 TaskParam(s,db)));
 				// TaskExecutor.submitTask(new UpdateStackFinalTask(new
 				// TaskParam(s,db)));
-				// TaskExecutor.submitTask(new UpdateStackFinalTask(new
-				// TaskParam(s,db)));
-				// TaskExecutor.submitTask(new CalcAveRoeTask(new
-				// TaskParam(s,db)));
-				// // TaskExecutor.submitTask(new UpdateBalSheetTask(new
+				// TaskExecutor.submitTask(new UpdateBalSheetTask(new
 				// TaskParam(s.getSymbol(),db)));
 //				 TaskExecutor.submitTask(new UpdateZycwzbTask(new
 //				 TaskParam(s.getSymbol(),db)));
-				// TaskExecutor.submitTask(new UpdateKLineDayTask(new
-				// TaskParam(s.getSymbol(),db)));
 			}
 			System.out.println("end:" + new Date());
 		} catch (Exception e) {

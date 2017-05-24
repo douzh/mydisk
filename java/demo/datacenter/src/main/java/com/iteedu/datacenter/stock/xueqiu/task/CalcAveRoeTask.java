@@ -29,12 +29,16 @@ public class CalcAveRoeTask extends AbsTask implements Runnable {
 			MongoCollection<Document> collection = param.getDb().getCollection(
 					"zycwzb");
 			FindIterable<Document> ite = getRoelist(collection);
+			int count=0;
 			List<Double> lstRoe = new ArrayList<Double>();
 			for (Document doc : ite) {
-				Double d = doc.getDouble("weightedroe");
 				if (listdate != null
 						&& doc.getString("reportdate").compareTo(listdate) < 0)
 					continue;
+				if (doc.getString("reportdate").compareTo("20071231") < 0)
+					continue;
+				count++;
+				Double d = doc.getDouble("weightedroe");
 				if (d == null || d > 70)
 					continue;
 				lstRoe.add(d);
@@ -66,14 +70,15 @@ public class CalcAveRoeTask extends AbsTask implements Runnable {
 			if (roeave > 0) {
 				Double tmp = Math.abs(roeave - roemin) / roeave;
 				double tmp2 = (1 - roecv + lstRoe.size() / 10 + (1 - (tmp > 1 ? 1
-						: tmp)));
+						: tmp))+(lstRoe.size()>2?lstRoe.size():0)/count);
 				Double score = SMath.dformat((lstRoe.get(0) + roeave) / 2
 						+ roeave * tmp2);
 				ave.put("roescore", score);
-				ave.put("roefinal", SMath.dformat(score / 4));
+				ave.put("roefinal", SMath.dformat(score / 5));
 			} else {
 				ave.put("roescore", roeave);
 			}
+			ave.put("reportcount", count);
 			ave.put("roecount", lstRoe.size());
 			ave.put("roelast", lstRoe.get(0));
 			ave.put("roelastsub", SMath.dformat(lstRoe.get(0) - roeave));

@@ -23,31 +23,25 @@ public class UpdateKLineDayPBTask extends AbsTask implements Runnable {
 
 	public void run() {
 		try {
-			MongoCollection<Document> cwzb = param.getDb().getCollection(
-					"zycwzb");
-			FindIterable<Document> pbite = cwzb
-					.find(new Document().append("symbol", param.getSymbol()))
-					.projection(
-							new Document().append("symbol", 1)
-									.append("naps", 1).append("reportdate", 1))
+			MongoCollection<Document> cwzb = param.getDb().getCollection("zycwzb");
+			// 取出账务数据
+			FindIterable<Document> pbite = cwzb.find(new Document().append("symbol", param.getSymbol()))
+					.projection(new Document().append("symbol", 1).append("naps", 1).append("reportdate", 1))
 					.sort(new Document().append("_id", -1));
 			List<Document> pblist = new ArrayList<Document>();
 			for (Document doc : pbite) {
 				pblist.add(doc);
 			}
 
-			MongoCollection<Document> klineday = param.getDb().getCollection(
-					"klineday");
+			MongoCollection<Document> klineday = param.getDb().getCollection("klineday");
 			FindIterable<Document> iteklineday = klineday
-					.find(new Document().append("symbol", param.getSymbol())
-//							.append("naps", null))
-							)
+					.find(new Document().append("symbol", param.getSymbol()).append("pb", null))
 					.projection(new Document().append("_id", 1).append("close", 1).append("pb", 1).append("date", 1))
 					.sort(new Document().append("_id", -1));
 			for (Document doc : iteklineday) {
 				String date = doc.getString("date");
 				Document naps = getNaps(pblist, date);
-				if (naps == null||naps.getDouble("naps")==null)
+				if (naps == null || naps.getDouble("naps") == null)
 					continue;
 				doc.put("naps", naps.getDouble("naps"));
 				doc.put("reportdate", naps.getString("reportdate"));
@@ -55,8 +49,7 @@ public class UpdateKLineDayPBTask extends AbsTask implements Runnable {
 				doc.put("createtime", now);
 				DbUtils.upsertById(klineday, doc);
 			}
-			System.out.println(Calendar.getInstance().getTime()
-					+ " UpdateKLineDayPBTask finish:" + param.getSymbol());
+			System.out.println(Calendar.getInstance().getTime() + " UpdateKLineDayPBTask finish:" + param.getSymbol());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -64,15 +57,15 @@ public class UpdateKLineDayPBTask extends AbsTask implements Runnable {
 	}
 
 	private Document getNaps(List<Document> pblist, String date) {
-		Document naps=null;
+		Document naps = null;
 		for (Document doc : pblist) {
-			if(doc.getDouble("naps")==null){
+			if (doc.getDouble("naps") == null) {
 				continue;
 			}
-			if(doc.getDouble("naps")==0){
+			if (doc.getDouble("naps") == 0) {
 				continue;
 			}
-			naps=doc;
+			naps = doc;
 			if (date.compareTo(doc.getString("reportdate")) <= 0) {
 				continue;
 			}

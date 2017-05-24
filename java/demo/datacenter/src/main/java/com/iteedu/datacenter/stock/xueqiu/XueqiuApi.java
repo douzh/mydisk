@@ -49,7 +49,7 @@ public class XueqiuApi {
 		List<TStock> lstStock= new ArrayList<TStock>();
 		MongoCollection<Document> slist = db.getCollection("stockpage");
 	
-		FindIterable<Document> ite =slist.find();
+		FindIterable<Document> ite =slist.find().sort(new Document().append("_id", 1));
 		for (Document doc : ite) {
 			TStock s=new TStock();
 			s.setName(doc.getString("name"));
