@@ -10,11 +10,11 @@ import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
-public class UpdateStackFinalTask extends AbsTask implements Runnable {
+public class BuildStackFinalTask extends AbsTask implements Runnable {
 
 	private TaskParam param;
 
-	public UpdateStackFinalTask(TaskParam param) {
+	public BuildStackFinalTask(TaskParam param) {
 		super();
 		this.param = param;
 	}

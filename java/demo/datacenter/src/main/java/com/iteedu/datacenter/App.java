@@ -6,10 +6,10 @@ import java.util.List;
 import com.iteedu.datacenter.stock.xueqiu.XueqiuApi;
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
 import com.iteedu.datacenter.stock.xueqiu.task.CalcAveRoeTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayPBTask;
+import com.iteedu.datacenter.stock.xueqiu.task.CalcKLineDayPBTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateListdateTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateStackFinalTask;
+import com.iteedu.datacenter.stock.xueqiu.task.CalcListdateTask;
+import com.iteedu.datacenter.stock.xueqiu.task.BuildStackFinalTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateZycwzbTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.mongodb.MongoClient;
@@ -39,7 +39,7 @@ public class App {
 				// TaskParam(s, db)));
 				// TaskExecutor.submitTask(new CalcAveRoeTask(new
 				// TaskParam(s,db)));
-				 TaskExecutor.submitTask(new UpdateStackFinalTask(new
+				 TaskExecutor.submitTask(new BuildStackFinalTask(new
 				 TaskParam(s,db)));
 				// TaskExecutor.submitTask(new UpdateBalSheetTask(new
 				// TaskParam(s.getSymbol(),db)));

@@ -12,11 +12,11 @@ import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
-public class UpdateKLineDayPBTask extends AbsTask implements Runnable {
+public class CalcKLineDayPBTask extends AbsTask implements Runnable {
 
 	private TaskParam param;
 
-	public UpdateKLineDayPBTask(TaskParam param) {
+	public CalcKLineDayPBTask(TaskParam param) {
 		super();
 		this.param = param;
 	}

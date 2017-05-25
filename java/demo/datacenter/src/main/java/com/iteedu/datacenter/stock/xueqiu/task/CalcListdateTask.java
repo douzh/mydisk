@@ -9,11 +9,11 @@ import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
-public class UpdateListdateTask extends AbsTask implements Runnable {
+public class CalcListdateTask extends AbsTask implements Runnable {
 
 	private TaskParam param;
 
-	public UpdateListdateTask(TaskParam param) {
+	public CalcListdateTask(TaskParam param) {
 		super();
 		this.param = param;
 	}

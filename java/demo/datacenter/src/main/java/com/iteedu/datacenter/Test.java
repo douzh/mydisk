@@ -8,9 +8,9 @@ import org.bson.Document;
 import com.iteedu.datacenter.stock.xueqiu.XueqiuApi;
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
 import com.iteedu.datacenter.stock.xueqiu.task.CalcAveRoeTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayPBTask;
+import com.iteedu.datacenter.stock.xueqiu.task.CalcKLineDayPBTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateStackFinalTask;
+import com.iteedu.datacenter.stock.xueqiu.task.BuildStackFinalTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.MongoClient;
@@ -33,7 +33,7 @@ public class Test {
 			System.out.println("Connect to database successfully");
 			 TStock s=new TStock();
 			 s.setSymbol("SH600318");
-			 TaskExecutor.submitTask(new UpdateKLineDayPBTask(new
+			 TaskExecutor.submitTask(new CalcKLineDayPBTask(new
 			 TaskParam(s,db)));
 			 TaskExecutor.submitTask(new CalcAveRoeTask(new TaskParam(s,db)));
 		} catch (Exception e) {
