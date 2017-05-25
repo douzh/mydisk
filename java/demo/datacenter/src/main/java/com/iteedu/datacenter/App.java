@@ -9,6 +9,7 @@ import com.iteedu.datacenter.stock.xueqiu.task.CalcAveRoeTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayPBTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateListdateTask;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdateStackFinalTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateZycwzbTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.mongodb.MongoClient;
@@ -32,18 +33,18 @@ public class App {
 			for (TStock s : lstStock) {
 				// TaskExecutor.submitTask(new UpdateKLineDayTask(new
 				// TaskParam(s, db)));
-				 TaskExecutor.submitTask(new UpdateKLineDayPBTask(new
-				 TaskParam(s, db)));
+				// TaskExecutor.submitTask(new UpdateKLineDayPBTask(new
+				// TaskParam(s, db)));
 				// TaskExecutor.submitTask(new UpdateListdateTask(new
 				// TaskParam(s, db)));
-//				 TaskExecutor.submitTask(new CalcAveRoeTask(new
-//				 TaskParam(s,db)));
-				// TaskExecutor.submitTask(new UpdateStackFinalTask(new
+				// TaskExecutor.submitTask(new CalcAveRoeTask(new
 				// TaskParam(s,db)));
+				 TaskExecutor.submitTask(new UpdateStackFinalTask(new
+				 TaskParam(s,db)));
 				// TaskExecutor.submitTask(new UpdateBalSheetTask(new
 				// TaskParam(s.getSymbol(),db)));
-//				 TaskExecutor.submitTask(new UpdateZycwzbTask(new
-//				 TaskParam(s.getSymbol(),db)));
+				// TaskExecutor.submitTask(new UpdateZycwzbTask(new
+				// TaskParam(s.getSymbol(),db)));
 			}
 			System.out.println("end:" + new Date());
 		} catch (Exception e) {

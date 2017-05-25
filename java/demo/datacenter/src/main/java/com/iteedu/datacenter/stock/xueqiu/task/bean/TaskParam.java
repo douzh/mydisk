@@ -8,6 +8,10 @@ public class TaskParam {
 	private String symbol;
 	private String name;
 	private MongoDatabase db;
+	public TaskParam(MongoDatabase db) {
+		super();
+		this.db = db;
+	}
 	public TaskParam(TStock s, MongoDatabase db) {
 		super();
 		this.symbol = s.getSymbol();

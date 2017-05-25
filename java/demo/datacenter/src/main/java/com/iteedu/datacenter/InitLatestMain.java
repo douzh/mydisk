@@ -1,5 +1,6 @@
 package com.iteedu.datacenter;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -7,35 +8,26 @@ import org.bson.Document;
 
 import com.iteedu.datacenter.stock.xueqiu.XueqiuApi;
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
-import com.iteedu.datacenter.stock.xueqiu.task.CalcAveRoeTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayPBTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
-import com.iteedu.datacenter.stock.xueqiu.task.UpdateStackFinalTask;
+import com.iteedu.datacenter.stock.xueqiu.task.AbsTask;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdatePageTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
 
-/**
- * Hello world!
- *
- */
-public class Test {
+public class InitLatestMain {
+
 	public static void main(String[] args) {
 
 		try {
-			MongoClient mongoClient = new MongoClient("localhost", 27017);
+			// 连接到 mongodb 服务
+			MongoClient mongoClient = new MongoClient("localhost", 9080);
 			// 连接到数据库
 			MongoDatabase db = mongoClient.getDatabase("stock");
 			System.out.println("Connect to database successfully");
-			 TStock s=new TStock();
-			 s.setSymbol("SH600318");
-			 TaskExecutor.submitTask(new UpdateKLineDayPBTask(new
-			 TaskParam(s,db)));
-			 TaskExecutor.submitTask(new CalcAveRoeTask(new TaskParam(s,db)));
+			new UpdatePageTask(new TaskParam(db)).run();
+			System.out.println("end:" + new Date());
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
