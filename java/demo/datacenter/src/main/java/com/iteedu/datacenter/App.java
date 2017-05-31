@@ -9,6 +9,7 @@ import com.iteedu.datacenter.stock.xueqiu.task.CalcAveRoeTask;
 import com.iteedu.datacenter.stock.xueqiu.task.CalcKLineDayPBTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
 import com.iteedu.datacenter.stock.xueqiu.task.CalcListdateTask;
+import com.iteedu.datacenter.stock.xueqiu.task.CalcPbDistTask;
 import com.iteedu.datacenter.stock.xueqiu.task.BuildStackFinalTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateZycwzbTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
@@ -45,6 +46,8 @@ public class App {
 				// TaskParam(s.getSymbol(),db)));
 				// TaskExecutor.submitTask(new UpdateZycwzbTask(new
 				// TaskParam(s.getSymbol(),db)));
+//				 TaskExecutor.submitTask(new CalcPbDistTask(new
+//				 TaskParam(s, db)));
 			}
 			System.out.println("end:" + new Date());
 		} catch (Exception e) {

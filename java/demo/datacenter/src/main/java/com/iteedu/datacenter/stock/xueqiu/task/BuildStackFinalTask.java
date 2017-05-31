@@ -36,20 +36,9 @@ public class BuildStackFinalTask extends AbsTask implements Runnable {
 				stock.put("symbol", param.getSymbol());
 				stock.put("name", param.getName());
 			}
-			MongoCollection<Document> roe = param.getDb().getCollection(
-					"stockroe");
-			FindIterable<Document> iteroe = roe
-					.find(new Document().append("_id", param.getSymbol()));
-			for (Document doc : iteroe) {
-				stock.putAll(doc);
-			}
-			MongoCollection<Document> page = param.getDb().getCollection(
-					"stockpage");
-			FindIterable<Document> itepage = page
-					.find(new Document().append("symbol", param.getSymbol()));
-			for (Document doc : itepage) {
-				stock.putAll(doc);
-			}
+			putAll(stock,"stockroe");
+			putAll(stock,"pbdist");
+			putAll(stock,"stockpage");
 			stock.put("roeyear", SMath.dformat(getRoeyear(stock)));
 			DbUtils.upsertById(stockfinal, stock);
 			 System.out.println(Calendar.getInstance().getTime()
@@ -59,6 +48,16 @@ public class BuildStackFinalTask extends AbsTask implements Runnable {
 					+ param.getSymbol());
 			e.printStackTrace();
 			return;
+		}
+	}
+	
+	private void putAll(Document stock,String colName){
+		MongoCollection<Document> col = param.getDb().getCollection(
+				colName);
+		FindIterable<Document> ite = col
+				.find(new Document().append("_id", param.getSymbol()));
+		for (Document doc : ite) {
+			stock.putAll(doc);
 		}
 	}
 	
