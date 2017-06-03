@@ -34,8 +34,10 @@ public class CalcKLineDayPBTask extends AbsTask implements Runnable {
 			}
 
 			MongoCollection<Document> klineday = param.getDb().getCollection("klineday");
+			Document filter=new Document().append("symbol", param.getSymbol());
+			filter.append("pb", null);
 			FindIterable<Document> iteklineday = klineday
-					.find(new Document().append("symbol", param.getSymbol()).append("pb", null))
+					.find(filter)
 					.projection(new Document().append("_id", 1).append("close", 1).append("pb", 1).append("date", 1))
 					.sort(new Document().append("_id", -1));
 			for (Document doc : iteklineday) {

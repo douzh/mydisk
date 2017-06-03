@@ -45,19 +45,7 @@ public class XueqiuApi {
 		return lstStock;
 	}
 	
-	public static List<TStock> getStocklist(MongoDatabase db) {
-		List<TStock> lstStock= new ArrayList<TStock>();
-		MongoCollection<Document> slist = db.getCollection("stockpage");
 	
-		FindIterable<Document> ite =slist.find().sort(new Document().append("_id", 1));
-		for (Document doc : ite) {
-			TStock s=new TStock();
-			s.setName(doc.getString("name"));
-			s.setSymbol(doc.getString("symbol"));
-			lstStock.add(s);
-		}
-		return lstStock;
-	}
 	
 	public static String getRs(String url){
 		try {

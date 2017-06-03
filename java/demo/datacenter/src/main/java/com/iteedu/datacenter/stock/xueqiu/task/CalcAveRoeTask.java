@@ -77,6 +77,7 @@ public class CalcAveRoeTask extends AbsTask implements Runnable {
 				ave.put("roefinal", SMath.dformat(score / 5));
 			} else {
 				ave.put("roescore", roeave);
+				ave.put("roefinal", roeave);
 			}
 			ave.put("reportcount", count);
 			ave.put("roecount", lstRoe.size());

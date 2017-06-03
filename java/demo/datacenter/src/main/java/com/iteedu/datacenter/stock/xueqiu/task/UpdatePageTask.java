@@ -15,7 +15,7 @@ public class UpdatePageTask extends AbsTask implements Runnable {
 	/**
 	 * 资产负债表
 	 */
-	public static final String API_PAGE = "https://xueqiu.com/stock/screener/screen.json?category=SH&orderby=symbol&order=desc&current=ALL&pb=ALL&page=";
+	public static final String API_PAGE = "https://xueqiu.com/stock/screener/screen.json?category=SH&orderby=symbol&order=desc&current=ALL&pb=ALL&dy=-100_100&page=";
 
 	private TaskParam param;
 
@@ -53,6 +53,7 @@ public class UpdatePageTask extends AbsTask implements Runnable {
 			item.put("name", s.getString("name"));
 			item.put("current", s.get("current"));
 			item.put("pb", s.get("pb"));
+			item.put("dy", s.get("dy"));
 			item.put("createtime", now);
 			DbUtils.upsertById(collection, item);
 			System.out.println("update symbol:"+key);

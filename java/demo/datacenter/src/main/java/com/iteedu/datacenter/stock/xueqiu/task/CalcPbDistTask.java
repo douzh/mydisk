@@ -26,7 +26,8 @@ public class CalcPbDistTask  extends AbsTask implements Runnable {
 	public void run() {
 		//获取历史排序PB
 		List<Double> lstPb=new ArrayList<Double>();
-		getSortPbList(lstPb);
+		List<Double> lstPbDate=new ArrayList<Double>();
+		getSortPbList(lstPb,lstPbDate);
 		if(CollectionUtils.isEmpty(lstPb)){
 			return;
 		}
@@ -39,11 +40,23 @@ public class CalcPbDistTask  extends AbsTask implements Runnable {
 		for(int i=0;i<=100;i+=5){
 			item.put("pb"+i, getPbN(lstPb,i));
 		}
+		for(int i=0;i<=100;i+=5){
+			item.put("pbdate"+i, getPbN(lstPbDate,i));
+		}
+		calcPbx(lstPb,lstPbDate, item);
+
+		item.put("createtime", now);
+		DbUtils.upsertById(colPb, item);
+		System.out.println("update symbol:"+param.getSymbol());
+	}
+
+	private void calcPbx(List<Double> lstPb,List<Double> lstPbDate, Document item) {
 		MongoCollection<Document> col = param.getDb().getCollection(
 				"stockpage");
 		FindIterable<Document> ite = col
 				.find(new Document().append("_id", param.getSymbol()));
 		Double pb=ite.first().getDouble("pb");
+		item.put("pbx", 100);
 		for(int i=0;i<lstPb.size();i++){
 			if(lstPb.get(i)<pb){
 				continue;
@@ -53,10 +66,15 @@ public class CalcPbDistTask  extends AbsTask implements Runnable {
 			item.put("pbscore", 100-pbx);
 			break;
 		}
-
-		item.put("createtime", now);
-		DbUtils.upsertById(colPb, item);
-		System.out.println("update symbol:"+param.getSymbol());
+		item.put("pbxdate", 100);
+		for(int i=0;i<lstPbDate.size();i++){
+			if(lstPbDate.get(i)<pb){
+				continue;
+			}
+			int pbx=100*i/lstPbDate.size();
+			item.put("pbxdate", pbx);
+			break;
+		}
 	}
 
 	private Double getPbN(List<Double> lstPb,int i){
@@ -70,11 +88,11 @@ public class CalcPbDistTask  extends AbsTask implements Runnable {
 		return lstPb.get(p);
 	}
 	
-	private void getSortPbList(List<Double> lstPb) {
+	private void getSortPbList(List<Double> lstPb,List<Double> lstPbDate) {
 		MongoCollection<Document> klineday = param.getDb().getCollection("klineday");
 		FindIterable<Document> iteklineday = klineday
 				.find(new Document().append("symbol", param.getSymbol()))
-				.projection(new Document().append("_id", 1).append("pb", 1))
+				.projection(new Document().append("_id", 1).append("pb", 1).append("date", 1))
 				.sort(new Document().append("pb", 1));
 		for (Document doc : iteklineday) {
 			Double pb = doc.getDouble("pb");
@@ -82,6 +100,10 @@ public class CalcPbDistTask  extends AbsTask implements Runnable {
 				continue;
 			}
 			lstPb.add(pb);
+			String date=doc.getString("date");
+			if(date.compareTo("20120101")>=0){
+				lstPbDate.add(pb);
+			}
 		}
 	}
 }

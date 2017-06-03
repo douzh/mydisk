@@ -1,19 +1,10 @@
 package com.iteedu.datacenter;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import org.bson.Document;
-
-import com.iteedu.datacenter.stock.xueqiu.XueqiuApi;
-import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
-import com.iteedu.datacenter.stock.xueqiu.task.AbsTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdatePageTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
-import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class InitLatestMain {
