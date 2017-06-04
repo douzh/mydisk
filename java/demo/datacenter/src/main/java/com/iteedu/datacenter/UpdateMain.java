@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
+import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -21,17 +23,15 @@ public class UpdateMain {
 			// 连接到数据库
 			MongoDatabase db = mongoClient.getDatabase("stock");
 			System.out.println("Connect to database successfully");
-			// List<TStock> lstStock=XueqiuApi.initStocklist(db);
 			List<TStock> lstStock = DbUtils.getStocklist(db);
 			for (TStock s : lstStock) {
-//				 TaskExecutor.submitTask(new UpdateKLineDayTask(new
-//				 TaskParam(s, db)));
+				new UpdateKLineDayTask(new TaskParam(s, db)).run();
+				// TaskExecutor.submitTask(new UpdateZycwzbTask(new
+				// TaskParam(s.getSymbol(),db)));
+				// TaskExecutor.submitTask(new UpdateCompanyInfoTask(new
+				// TaskParam(s, db)));
 				// TaskExecutor.submitTask(new UpdateBalSheetTask(new
 				// TaskParam(s.getSymbol(),db)));
-//				 TaskExecutor.submitTask(new UpdateZycwzbTask(new
-//				 TaskParam(s.getSymbol(),db)));
-//				 TaskExecutor.submitTask(new UpdateCompanyInfoTask(new
-//				 TaskParam(s, db)));
 			}
 			System.out.println("end:" + new Date());
 		} catch (Exception e) {

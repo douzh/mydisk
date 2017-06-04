@@ -34,6 +34,9 @@ public class UpdateKLineDayTask extends AbsTask implements Runnable {
 			FindIterable<Document> iteklineday = klineday.find(new Document().append("symbol", param.getSymbol()))
 					.sort(new Document().append("date", -1)).limit(1);
 			Document first = iteklineday.first();
+			if(first!=null){
+				return;
+			}
 			long begin=0;
 			String endDate=DateUtils.getYesterdayYmd();
 			long end=DateUtils.getLongTime(endDate);

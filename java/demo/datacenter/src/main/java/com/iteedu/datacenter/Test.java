@@ -35,7 +35,7 @@ public class Test {
 			System.out.println("Connect to database successfully");
 			 TStock s=new TStock();
 			 s.setSymbol("SH600330");
-			 TaskExecutor.submitTask(new CalcAveRoeTask(new TaskParam(s,db)));
+//			 TaskExecutor.submitTask(new CalcAveRoeTask(new TaskParam(s,db)));
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
