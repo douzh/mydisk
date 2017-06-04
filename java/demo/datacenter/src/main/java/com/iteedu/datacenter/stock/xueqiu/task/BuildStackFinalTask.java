@@ -36,6 +36,7 @@ public class BuildStackFinalTask extends AbsTask implements Runnable {
 				stock.put("symbol", param.getSymbol());
 				stock.put("name", param.getName());
 			}
+			putAll(stock, "listdate");
 			putAll(stock, "stockroe");
 			putAll(stock, "pbdist");
 			putAll(stock, "stockpage");

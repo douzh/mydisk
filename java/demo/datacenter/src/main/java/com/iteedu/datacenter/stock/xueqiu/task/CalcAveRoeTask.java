@@ -84,6 +84,7 @@ public class CalcAveRoeTask extends AbsTask implements Runnable {
 			ave.put("roelast", lstRoe.get(0));
 			ave.put("roelastsub", SMath.dformat(lstRoe.get(0) - roeave));
 			ave.put("roelist", lstRoe);
+			setLevel(ave);
 			DbUtils.upsertById(calc, ave);
 			System.out.println(Calendar.getInstance().getTime()
 					+ " CalcAveRoeTask finish:" + param.getSymbol());
@@ -94,6 +95,25 @@ public class CalcAveRoeTask extends AbsTask implements Runnable {
 		}
 	}
 
+	private void setLevel(Document ave){
+		Double roefinal=ave.getDouble("roefinal");
+		Double roelast=ave.getDouble("roelast");
+		String level=null;
+		if(roefinal>=20&&roelast>=20){
+			level="A";
+		}else if(roefinal>=15&&roelast>=15){
+			level="B";
+		}else if(roefinal>=10&&roelast>=10){
+			level="C";
+		}else if(roefinal>=5&&roelast>=5){
+			level="D";
+		}else if(roefinal>=0&&roelast>=0){
+			level="E";
+		}else {
+			level="F";
+		}
+		ave.put("roelevel", level);
+	}
 	private FindIterable<Document> getRoelist(
 			MongoCollection<Document> collection) {
 		Document condition = new Document();

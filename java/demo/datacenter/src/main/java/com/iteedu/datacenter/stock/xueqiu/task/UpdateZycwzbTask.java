@@ -29,8 +29,10 @@ public class UpdateZycwzbTask extends AbsTask implements Runnable {
 		try {
 			MongoCollection<Document> collection = param.getDb().getCollection(
 					"zycwzb");
-			if (collection.count(new Document().append("symbol",
-					param.getSymbol()).append("createtime", now)) > 0) {
+			Document filter =new Document().append("symbol",
+					param.getSymbol());
+//			filter.append("createtime", now);
+			if (collection.count(filter) > 0) {
 				return;
 			}
 			String sJson = XueqiuApi.getRs(API_ZYCWZB + param.getSymbol());

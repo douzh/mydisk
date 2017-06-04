@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdateZycwzbTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
 import com.iteedu.mongodb.api.DbUtils;
 import com.mongodb.MongoClient;
@@ -25,9 +26,8 @@ public class UpdateMain {
 			System.out.println("Connect to database successfully");
 			List<TStock> lstStock = DbUtils.getStocklist(db);
 			for (TStock s : lstStock) {
-				new UpdateKLineDayTask(new TaskParam(s, db)).run();
-				// TaskExecutor.submitTask(new UpdateZycwzbTask(new
-				// TaskParam(s.getSymbol(),db)));
+//				new UpdateKLineDayTask(new TaskParam(s, db)).run();
+				new UpdateZycwzbTask(new TaskParam(s.getSymbol(), db)).run();
 				// TaskExecutor.submitTask(new UpdateCompanyInfoTask(new
 				// TaskParam(s, db)));
 				// TaskExecutor.submitTask(new UpdateBalSheetTask(new
