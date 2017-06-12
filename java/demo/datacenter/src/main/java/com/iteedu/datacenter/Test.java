@@ -34,8 +34,8 @@ public class Test {
 			MongoDatabase db = mongoClient.getDatabase("stock");
 			System.out.println("Connect to database successfully");
 			 TStock s=new TStock();
-			 s.setSymbol("SZ002673");
-			 new CalcAveRoeTask(new TaskParam(s,db)).run();
+			 s.setSymbol("SZ000963");
+			 new CalcKLineDayPBTask(new TaskParam(s,db)).run();
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}

@@ -15,7 +15,7 @@ public class UpdateBalSheetTask extends AbsTask implements Runnable{
 	 /**
      * 资产负债表
      */
-    public static final String API_BALSHEET="http://xueqiu.com/stock/f10/balsheet.json?page=1&size=40&symbol=";
+    public static final String API_BALSHEET="http://xueqiu.com/stock/f10/balsheet.json?page=1&size=200&symbol=";
     
 	
 	private TaskParam param;

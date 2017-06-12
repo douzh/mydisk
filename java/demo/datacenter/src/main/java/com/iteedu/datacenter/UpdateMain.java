@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.iteedu.datacenter.stock.xueqiu.bean.TStock;
+import com.iteedu.datacenter.stock.xueqiu.task.UpdateBalSheetTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateKLineDayTask;
 import com.iteedu.datacenter.stock.xueqiu.task.UpdateZycwzbTask;
 import com.iteedu.datacenter.stock.xueqiu.task.bean.TaskParam;
@@ -26,12 +27,11 @@ public class UpdateMain {
 			System.out.println("Connect to database successfully");
 			List<TStock> lstStock = DbUtils.getStocklist(db);
 			for (TStock s : lstStock) {
-//				new UpdateKLineDayTask(new TaskParam(s, db)).run();
-				new UpdateZycwzbTask(new TaskParam(s.getSymbol(), db)).run();
+				new UpdateKLineDayTask(new TaskParam(s, db)).run();
+//				new UpdateZycwzbTask(new TaskParam(s.getSymbol(), db)).run();
 				// TaskExecutor.submitTask(new UpdateCompanyInfoTask(new
 				// TaskParam(s, db)));
-				// TaskExecutor.submitTask(new UpdateBalSheetTask(new
-				// TaskParam(s.getSymbol(),db)));
+//				new UpdateBalSheetTask(new TaskParam(s.getSymbol(),db)).run();
 			}
 			System.out.println("end:" + new Date());
 		} catch (Exception e) {
