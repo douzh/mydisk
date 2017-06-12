@@ -41,13 +41,14 @@ public class CalcKLineDayPBTask extends AbsTask implements Runnable {
 					"klineday");
 			Document filter = new Document()
 					.append("symbol", param.getSymbol());
-			filter.append("pb", null);
+//			filter.append("pb", null);
 			FindIterable<Document> iteklineday = klineday
 					.find(filter)
 					.projection(
 							new Document().append("_id", 1).append("close", 1)
 									.append("pb", 1).append("date", 1))
 					.sort(new Document().append("_id", 1));
+			String preDate=null;
 			Double preClose = null;
 			Double prePb = null;
 			Double sub = null;
@@ -57,7 +58,8 @@ public class CalcKLineDayPBTask extends AbsTask implements Runnable {
 				if (naps == null || naps.getDouble("naps") == null)
 					continue;
 				doc.put("naps", naps.getDouble("naps"));
-				doc.put("reportdate", naps.getString("reportdate"));
+				String rdate=naps.getString("reportdate");
+				doc.put("reportdate", rdate);
 				Double close = doc.getDouble("close");
 				Double pb = close / naps.getDouble("naps");
 				if (preClose != null
@@ -68,10 +70,15 @@ public class CalcKLineDayPBTask extends AbsTask implements Runnable {
 				if (prePb != null && Math.abs((prePb - pb) / prePb) <= 0.11) {
 					sub = null;
 				}
+				if(!rdate.equals(preDate)){
+					//跨季重计
+					sub = null;
+				}
 				if (sub != null) {
 					pb += sub;
 				}
 				doc.put("pb", SMath.dformat(pb));
+				preDate=rdate;
 				prePb = pb;
 				preClose = close;
 				doc.put("createtime", now);
