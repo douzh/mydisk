@@ -3,6 +3,12 @@ package com.iteedu.demo.spark
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{ SaveMode, SparkSession }
+import org.apache.spark.sql.Column
+import java.util.UUID
+import org.apache.spark.sql.hive.HiveContext
+import scala.io.Source
+import java.io.PrintWriter
+import java.io.File
 
 /**
  * csv文件读取与操作
@@ -13,10 +19,14 @@ object CsvFileDemo {
     val conf = new SparkConf().setAppName("spark init test");
     conf.setMaster("local");
     val spark = SparkSession.builder.config(conf).getOrCreate();
-    val csv = spark.read.format("csv").option("header","true").option("delimiter","^").load("D:/data/biz_pro_info.csv");
-    //创建临时表，用于spark sql查询用
+    var csv = spark.read.format("csv").option("header", "false").option("delimiter", "\001").load("D:/data/inv_contract.csv");
     csv.createOrReplaceTempView("proinfo");
-    val rs=spark.sql("select * from proinfo limit 10");
-    rs.show();
+    val lstR=csv.rdd.map(r=>r.mkString("\001")).collect()
+    val writer = new PrintWriter(new File("D:/test.csv"))
+    writer.println(csv.columns.mkString("\001"))
+    lstR.foreach(r=>writer.println(r))
+    writer.flush()
+    writer.close()
+    
   }
 }
