@@ -2,6 +2,7 @@ package com.iteedu.crypto.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -11,7 +12,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import cn.org.nifa.prmis.modules.task.crypto.utils.CryptoException;
 
 /**
  * 加密工具类

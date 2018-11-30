@@ -4,18 +4,11 @@
 
 
 
-	<groupId>cn.org.nifa.prmis</groupId>
-	<artifactId>prmis-crypt</artifactId>
+	<groupId>com.iteedu</groupId>
+	<artifactId>comm-crypto</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>prmis-crypt</name>
-
-	<parent>
-		<groupId>cn.org.nifa.prmis</groupId>
-		<artifactId>prmis-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+	<name>comm-crypto</name>
 
 
 	<dependencies>
