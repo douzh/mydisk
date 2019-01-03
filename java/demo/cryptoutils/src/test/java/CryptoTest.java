@@ -16,6 +16,18 @@ public class CryptoTest {
     public static final String rsaPub = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCtSnKr0qCAzDof3+oLPbWynIAa5Jux4KsnYTL1TB4xErE3YOLpkrFKhvFneImB+e35gtR1WvhjweavjSGpzj1tAqrY/o0ZPo905/L4mW3slbZra7U3k9LFdQzlBfnkKI2Dr6pSBJYhYoVWOtsKSOv80c3jPgI/2dvrRFXDgVoBCQIDAQAB";
 
     @Test
+    public void testRsa() throws CryptoException {
+    	String str="abc";
+    	String enc1=EnUtils.rsaEnc(str, rsaPub);
+    	String dec1=DeUtils.rsaDec(enc1, rsaPrivate);
+    	System.out.println(dec1);
+    	String enc2=EnUtils.rsaEnc(str, rsaPrivate);
+    	String dec2=DeUtils.rsaDec(enc2, rsaPub);
+    	System.out.println(dec2);
+    	
+    }
+    
+    @Test
     public void cryptoTest() throws CryptoException, UnsupportedEncodingException {
 		// -----------加密过程------------
         // aes随机密钥
